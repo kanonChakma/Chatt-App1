@@ -1,8 +1,6 @@
 //get login page
 function getUsers(req, res, next){
-    res.render("users", {
-        title: "users-Chat app"
-    })
+    res.render("users")
  }
  module.exports ={
      getUsers
