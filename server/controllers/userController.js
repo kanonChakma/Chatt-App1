@@ -2,8 +2,9 @@ import generateToken from '../config/generateToken.js';
 import User from "../model/userModel.js";
 
 export const register = async (req, res) => {
-  
-        const { username, email, password , pic } = req.body;
+        console.log(req.body);
+        const { username, email, password , pic } = req.body.data;
+        
         if(!username || !email || !password) {
           return res.json({
             msg: "Please Enter all the Fields",
@@ -42,6 +43,7 @@ export const register = async (req, res) => {
 }
 
 export const login = async(req, res) => {
+  
     const { email, password } = req.body;
     const user = await User.findOne({email});
 
