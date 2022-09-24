@@ -2,6 +2,7 @@ import cors from "cors";
 import * as dotenv from 'dotenv';
 import express from 'express';
 import connectDB from "./config/db.js";
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 dotenv.config()
@@ -15,6 +16,10 @@ app.use(express.json());
 app.use("/api/user", authRoutes);
 app.use("/api/messages", messageRoutes);
 connectDB();
+
+//error handleing
+app.use(notFound);
+app.use(errorHandler);
 
 
 const port = process.env.PORT || 8086;

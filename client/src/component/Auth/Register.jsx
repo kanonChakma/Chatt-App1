@@ -4,6 +4,7 @@ import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import { useState } from "react";
+import { registerUser } from "../../common/useAuth";
 //import { useHistory } from "react-router";
 
 const Signup = () => {
@@ -12,120 +13,111 @@ const Signup = () => {
   const toast = useToast();
   //const history = useHistory();
 
-  const [name, setName] = useState();
+  const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [confirmpassword, setConfirmpassword] = useState();
   const [password, setPassword] = useState();
   const [pic, setPic] = useState();
-  const [picLoading, setPicLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async () => {
-    // setPicLoading(true);
-    // if (!name || !email || !password || !confirmpassword) {
-    //   toast({
-    //     title: "Please Fill all the Feilds",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   setPicLoading(false);
-    //   return;
-    // }
-    // if (password !== confirmpassword) {
-    //   toast({
-    //     title: "Passwords Do Not Match",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   return;
-    // }
-    // console.log(name, email, password, pic);
-    // try {
-    //   const config = {
-    //     headers: {
-    //       "Content-type": "application/json",
-    //     },
-    //   };
-    //   const { data } = await axios.post(
-    //     "/api/user",
-    //     {
-    //       name,
-    //       email,
-    //       password,
-    //       pic,
-    //     },
-    //     config
-    //   );
-    //   console.log(data);
-    //   toast({
-    //     title: "Registration Successful",
-    //     status: "success",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   localStorage.setItem("userInfo", JSON.stringify(data));
-    //   setPicLoading(false);
-    //   history.push("/chats");
-    // } catch (error) {
-    //   toast({
-    //     title: "Error Occured!",
-    //     description: error.response.data.message,
-    //     status: "error",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   setPicLoading(false);
-    // }
+    setLoading(true);
+    
+    if (!username || !email || !password || !confirmpassword) {
+      toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmpassword) {
+      toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    const userData ={ username, email,password,pic}
+
+    try {
+       const response = await registerUser(userData)
+      console.log(response);
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      // localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      // history.push("/chats");
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
   };
 
   const postDetails = (pics) => {
-    // setPicLoading(true);
-    // if (pics === undefined) {
-    //   toast({
-    //     title: "Please Select an Image!",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   return;
-    // }
-    // console.log(pics);
-    // if (pics.type === "image/jpeg" || pics.type === "image/png") {
-    //   const data = new FormData();
-    //   data.append("file", pics);
-    //   data.append("upload_preset", "chat-app");
-    //   data.append("cloud_name", "piyushproj");
-    //   fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
-    //     method: "post",
-    //     body: data,
-    //   })
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       setPic(data.url.toString());
-    //       console.log(data.url.toString());
-    //       setPicLoading(false);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       setPicLoading(false);
-    //     });
-    // } else {
-    //   toast({
-    //     title: "Please Select an Image!",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   setPicLoading(false);
-    //   return;
-    // }
+    setLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+    console.log(pics);
+
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chatt-app");
+      data.append("cloud_name", "dmnkw7ehc");
+
+      fetch("https://api.cloudinary.com/v1_1/dmnkw7ehc/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
   };
 
   return (
@@ -134,7 +126,7 @@ const Signup = () => {
         <FormLabel>Name</FormLabel>
         <Input
           placeholder="Enter Your Name"
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setUserName(e.target.value)}
         />
       </FormControl>
       <FormControl id="email" isRequired>
@@ -189,7 +181,7 @@ const Signup = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
-        isLoading={picLoading}
+        isLoading={loading}
       >
         Sign Up
       </Button>
