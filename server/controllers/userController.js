@@ -84,13 +84,16 @@ export const setAvatar = async (req, res, next) => {
 };
 
 export const getAllUsers = async (req, res, next) => {
+  console.log(req.user);
+  const keyword = req.query.search ? {
+    $or: [
+      { name:  { $regex: req.query.search, $options: 'i' } },
+      { email: { $regex: req.query.search, $options: 'i' } }
+    ]
+  }: {}
+
   try {
-    const users = await User.find({ _id: { $ne: req.params.id } }).select([
-      "email",
-      "username",
-      "avatarImage",
-      "_id",
-    ]);
+    const users = await User.find(keyword).find({_id: {$ne: req.user._id}});
     return res.json(users);
   } catch (ex) {
     next(ex);
