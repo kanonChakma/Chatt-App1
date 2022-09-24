@@ -1,17 +1,62 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, useToast, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { loginUser } from "../../common/useAuth";
 
 const Login = () =>{
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  let navigate = useNavigate();
   
-  const submitHandler = () => {
+  const submitHandler = async () => {
+    setLoading(true);
+    
+    if (!email || !password ) {
+      toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
 
-  }
+
+    const userData ={ email,password}
+
+    try {
+       const response = await loginUser(userData)
+      toast({
+        title: "Login Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(response.data));
+      setLoading(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
+
   const handleClick = () => setShow(!show);
+
   return (
     <VStack spacing="10px">
       <FormControl id="email" isRequired>

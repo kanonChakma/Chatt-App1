@@ -4,14 +4,14 @@ import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../common/useAuth";
-//import { useHistory } from "react-router";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
-  //const history = useHistory();
+  let navigate = useNavigate();
 
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
@@ -58,9 +58,9 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
-      // localStorage.setItem("userInfo", JSON.stringify(data));
+      localStorage.setItem("userInfo", JSON.stringify(response.data));
       setLoading(false);
-      // history.push("/chats");
+      navigate("/chats");
     } catch (error) {
       toast({
         title: "Error Occured!",
