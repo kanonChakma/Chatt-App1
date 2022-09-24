@@ -1,14 +1,16 @@
-import bcrypt from 'bcrypt';
+import generateToken from '../config/generateToken.js';
 import User from "../model/userModel.js";
 
-export const register = async (req, res, next) => {
-        const { username, email, password } = req.body;
-        if(!username || !email || password) {
+export const register = async (req, res) => {
+  
+        const { username, email, password , pic } = req.body;
+        if(!username || !email || !password) {
           return res.json({
             msg: "Please Enter all the Fields",
             status: 400
           })
         }
+        
         //email check
         const emailCheck = await User.findOne({ email });
         if (emailCheck) {
@@ -17,7 +19,6 @@ export const register = async (req, res, next) => {
             status: 400 });
         }
         
-          const hashedPassword = await bcrypt.hash(password, 10);
         //create user  
         const user = await User.create ({
           email,
@@ -29,7 +30,8 @@ export const register = async (req, res, next) => {
         
       if(user) {
         return res.json({ 
-          status: 201, 
+          status: 201,
+          generateToken: generateToken(user._id), 
           user 
         });
 
@@ -39,20 +41,23 @@ export const register = async (req, res, next) => {
       }
 }
 
-export const login = async(req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user)
-      return res.json({ msg: "Incorrect Username or Password", status: false });
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
-      return res.json({ msg: "Incorrect Username or Password", status: false });
-    delete user.password;
-    return res.json({ status: true, user });
-  } catch (ex) {
-    next(ex);
-  }
+export const login = async(req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({email});
+
+    console.log(await user.matchPassword(password));
+    if(user && (await user.matchPassword(password))){
+       return res.json({
+         status:201,
+         user
+       })
+       
+      }else {
+        return res.json({ 
+        msg: "Incorrect Username or Password", 
+        status: false 
+      });
+    }
 }
 
 export const setAvatar = async (req, res, next) => {
