@@ -44,10 +44,10 @@ export const register = async (req, res) => {
 
 export const login = async(req, res) => {
   
-    const { email, password } = req.body;
+    const { email, password } = req.body.data;
     const user = await User.findOne({email});
 
-    console.log(await user.matchPassword(password));
+    //console.log(await user.matchPassword(password));
     if(user && (await user.matchPassword(password))){
        return res.json({
          status:201,
