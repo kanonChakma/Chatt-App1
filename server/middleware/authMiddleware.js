@@ -9,6 +9,7 @@ export const authCheck = async(req, res, next) => {
       token = auth.split(" ")[1];
       //decode token id
       const decoded = jwt.verify(token, process.env.JSON_SECRET);
+      console.log(decoded)
       req.user = await User.findById(decoded.id).select("-password");
       next(); 
     } catch (error) {
