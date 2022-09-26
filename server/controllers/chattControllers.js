@@ -69,7 +69,6 @@ export const fetchChats = async (req, res) => {
   }  
 }
 
-
 // create group chatt
 export const groupChat = async(req, res) => {
 
@@ -122,12 +121,38 @@ export const addToGroup = async(req, res) => {
   .populate("users", "-password")
   .populate("groupAdmin", "-password");
 
-  if(!newChat){
+  if(!newChat) {
     res.status(404)
     throw new Error("Chat Not Found!");
   } else {
     res.json(newChat);
   }
 }
+
+export const removeToGroup = async(req, res) => {
+  const {chatId, userId} = req.body;
+  const newChat =  Chat.findByIdAndUpdate(chatId, {
+    $pull: {users: userId}
+  }, {new: true})
+  .populate("users", "-password")
+  .populate("groupAdmin", "-password");
+
+  if(!newChat) {
+    res.status(404)
+    throw new Error("Chat Not Found!");
+  } else {
+    res.json(newChat);
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
