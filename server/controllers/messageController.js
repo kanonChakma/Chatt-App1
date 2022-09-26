@@ -1,6 +1,5 @@
 import Messages from "../model/messageModel.js";
 
-
 export const getMessages = async (req, res, next) => {
   try {
     const { from, to } = req.body;

@@ -69,19 +69,17 @@ export const fetchChats = async (req, res) => {
   }  
 }
 
-//create group chatt
+// create group chatt
 export const groupChat = async(req, res) => {
 
   if(!req.body.users || !req.body.name) {
     return res.status(400).send("Please Fill all the fields");
   }
 
-  var users = JSON.parse(req.body.users);
-  
+  var users = JSON.parse(req.body.users);  
   if(users.length < 2) {
     return res.status(400).send("More than two users are required to form a group chat");
   }
-
   users.push(req.user);
   try {
     const groupChat = await Chat.create({
@@ -100,6 +98,58 @@ export const groupChat = async(req, res) => {
     throw new Error(error.message);
   }
 }
+
+export const renameGroup = async(req, res) => {
+   const {chatName, chatId} = req.body;
+  const updateChat =  await Chat.findByIdAndUpdate(chatId, {chatName}, {new: true})
+  .populate("users", "-password")
+  .populate("groupAdmin", "-password");
+  
+ if(updateChat) {
+    res.json(updateChat)
+ } else{
+   res.status(404);
+   throw new Error("Chat Not Found");
+  } 
+}
+
+export const addToGroup = async(req, res) => {
+  const {chatId, userId} = req.body;
+  const newChat =  Chat.findByIdAndUpdate(chatId, {
+    $push: {users: userId}
+  }, {new: true})
+  .populate("users", "-password")
+  .populate("groupAdmin", "-password");
+
+  if(!newChat) {
+    res.status(404)
+    throw new Error("Chat Not Found!");
+  } else {
+    res.json(newChat);
+  }
+}
+
+export const removeToGroup = async(req, res) => {
+  const {chatId, userId} = req.body;
+  const newChat =  Chat.findByIdAndUpdate(chatId, {
+    $pull: {users: userId}
+  }, {new: true})
+  .populate("users", "-password")
+  .populate("groupAdmin", "-password");
+
+  if(!newChat) {
+    res.status(404)
+    throw new Error("Chat Not Found!");
+  } else {
+    res.json(newChat);
+  }
+}
+
+
+
+
+
+
 
 
 
