@@ -5,18 +5,18 @@ import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
 import {
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuItem,
-    MenuList
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList
 } from "@chakra-ui/menu";
 import {
-    Drawer,
-    DrawerBody,
-    DrawerContent,
-    DrawerHeader,
-    DrawerOverlay
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay
 } from "@chakra-ui/modal";
 import { Spinner } from "@chakra-ui/spinner";
 import { useToast } from "@chakra-ui/toast";
@@ -25,11 +25,11 @@ import axios from "axios";
 import { useState } from "react";
 import NotificationBadge, { Effect } from "react-notification-badge";
 import { useNavigate } from "react-router-dom";
-import { getSender } from "../../config/ChatLogics";
-import { ChatState } from "../../Context/ChatProvider";
-import ChatLoading from "../ChatLoading";
-import UserListItem from "../userAvatar/UserListItem";
-import ProfileModal from "./ProfileModal";
+import { getSender } from "../config/ChatLogics";
+import { ChatState } from "../context/ChatProvider";
+import ChatLoading from "./ChatLoading";
+import ProfileModal from "./ProfileModel";
+import UserListItem from "./useAvatar/UserListItem";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");

@@ -60,7 +60,7 @@ const Signup = () => {
       });
       localStorage.setItem("userInfo", JSON.stringify(response.data));
       setLoading(false);
-      navigate("/chats");
+      navigate("/chat");
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -152,7 +152,7 @@ const Signup = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <FormControl id="password" isRequired>
+      <FormControl id="cofirm password" isRequired>
         <FormLabel>Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input

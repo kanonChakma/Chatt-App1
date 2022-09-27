@@ -6,7 +6,8 @@ import SideDrawer from "../component/SideDrawer";
 import { ChatState } from "../context/ChatProvider";
 
 const Chat = () => {
-  const {user} = ChatState();
+  const user = ChatState();
+  console.log(user)
   return (
     <div>
       {user && <SideDrawer/>}
