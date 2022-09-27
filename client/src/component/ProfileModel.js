@@ -1,10 +1,12 @@
 import { ViewIcon } from "@chakra-ui/icons";
 import {
-    Button, IconButton, Image, Modal, ModalBody,
-    ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure
+  Button, IconButton, Image, Modal, ModalBody,
+  ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure
 } from "@chakra-ui/react";
 
 const ProfileModal = ({ user, children }) => {
+  const {username, email, pic} = user.user;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -22,8 +24,9 @@ const ProfileModal = ({ user, children }) => {
             fontFamily="Work sans"
             d="flex"
             justifyContent="center"
+            alignItems="center"
           >
-            {user.name}
+            {username}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -35,14 +38,14 @@ const ProfileModal = ({ user, children }) => {
             <Image
               borderRadius="full"
               boxSize="150px"
-              src={user.pic}
-              alt={user.name}
+              src={pic}
+              alt={username}
             />
             <Text
               fontSize={{ base: "28px", md: "30px" }}
               fontFamily="Work sans"
             >
-              Email: {user.email}
+              Email: {email}
             </Text>
           </ModalBody>
           <ModalFooter>
