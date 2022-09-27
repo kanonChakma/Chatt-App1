@@ -89,12 +89,11 @@ function SideDrawer() {
   };
 
   const accessChat = async (userId) => {
-    console.log(userId);
 
     try {
       setLoadingChat(true);
       const { data } = await oneToOneChat(userId, user);
-      console.log(data);
+
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);
