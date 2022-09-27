@@ -21,10 +21,11 @@ import {
 import { Spinner } from "@chakra-ui/spinner";
 import { useToast } from "@chakra-ui/toast";
 import { Tooltip } from "@chakra-ui/tooltip";
-import axios from "axios";
 import { useState } from "react";
 import NotificationBadge, { Effect } from "react-notification-badge";
 import { useNavigate } from "react-router-dom";
+import { oneToOneChat } from "../common/chatApi";
+import { getAllUser } from "../common/useAuth";
 import { getSender } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
 import ChatLoading from "./ChatLoading";
@@ -32,6 +33,7 @@ import ProfileModal from "./ProfileModel";
 import UserListItem from "./useAvatar/UserListItem";
 
 function SideDrawer() {
+
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,14 +72,8 @@ function SideDrawer() {
     try {
       setLoading(true);
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
-
+      const { data } = await getAllUser(search, user);
+      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -97,14 +93,8 @@ function SideDrawer() {
 
     try {
       setLoadingChat(true);
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
-
+      const { data } = await oneToOneChat(userId, user);
+      console.log(data);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);
@@ -122,7 +112,7 @@ function SideDrawer() {
   };
 
   return (
-    <>
+    <div>
       <Box
         d="flex"
         justifyContent="space-between"
@@ -174,7 +164,7 @@ function SideDrawer() {
               <Avatar
                 size="sm"
                 cursor="pointer"
-                name={user.name}
+                name={user.username}
                 src={user.pic}
               />
             </MenuButton>
@@ -218,7 +208,7 @@ function SideDrawer() {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </>
+    </div>
   );
 }
 
