@@ -2,12 +2,12 @@ import { AddIcon } from "@chakra-ui/icons";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { fetchAllChats } from "../common/chatApi";
 import { getSender } from "../config/ChatLogics";
-import { ChatState } from "../Context/ChatProvider";
+import { ChatState } from "../context/ChatProvider";
 import ChatLoading from "./ChatLoading";
-import GroupChatModal from "./miscellaneous/GroupChatModal";
+import GroupChatModal from "./GroupChatModal";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
@@ -19,13 +19,7 @@ const MyChats = ({ fetchAgain }) => {
   const fetchChats = async () => {
     // console.log(user._id);
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await fetchAllChats(user);
       setChats(data);
     } catch (error) {
       toast({

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { loginRoute, registerRoute } from '../utils/allRoutes';
+import { allUsersRoute, loginRoute, registerRoute } from '../utils/allRoutes';
 
 export const registerUser=async(data)=>{
     return await axios.post(
@@ -20,6 +20,17 @@ export const registerUser=async(data)=>{
         {
           headers: {
                 "Content-type": "application/json",
+            }
+         }
+      )
+  }
+  
+  export const  getAllUser=async(search, user)=>{
+    return await axios.get(
+        `${allUsersRoute}?search=${search}`,
+        {
+          headers: {
+              Authorization: `Bearer ${user.token}`,
             }
          }
       )

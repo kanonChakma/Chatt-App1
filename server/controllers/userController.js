@@ -32,7 +32,7 @@ export const register = async (req, res) => {
       if(user) {
         return res.json({ 
           status: 201,
-          generateToken: generateToken(user._id), 
+          token: generateToken(user._id), 
           user 
         });
 
@@ -51,7 +51,8 @@ export const login = async(req, res) => {
     if(user && (await user.matchPassword(password))){
        return res.json({
          status:201,
-         user
+         user,
+         token: generateToken(user._id),
        })
        
       }else {
@@ -84,7 +85,7 @@ export const setAvatar = async (req, res, next) => {
 };
 
 export const getAllUsers = async (req, res, next) => {
-  console.log(req.user);
+
   const keyword = req.query.search ? {
     $or: [
       { name:  { $regex: req.query.search, $options: 'i' } },

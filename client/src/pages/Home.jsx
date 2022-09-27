@@ -10,6 +10,7 @@ const Home = () =>{
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userInfo"));
+    console.log("In Home",user)
     if(user){
       navigate("/chat")      
     }
