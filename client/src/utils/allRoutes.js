@@ -8,3 +8,4 @@ export const sendMessageRoute = `${host}/api/messages/addmsg`;
 export const recieveMessageRoute = `${host}/api/messages/getmsg`;
 export const setAvatarRoute = `${host}/api/auth/setavatar`;
 export const fetchAllChatsRoute = `${host}/api/chat`;
+export const fetchGroupChatsRoute = `${host}/api/chat/group`;

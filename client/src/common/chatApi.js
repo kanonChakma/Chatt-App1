@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchAllChatsRoute } from '../utils/allRoutes';
+import { fetchAllChatsRoute, fetchGroupChatsRoute } from '../utils/allRoutes';
 
 
 export const fetchAllChats = async(user) => {  
@@ -20,6 +20,20 @@ export const fetchAllChats = async(user) => {
          {
           headers: {
               "Content-type": "application/json",
+              Authorization: `Bearer ${user.token}`
+            }
+         }
+      )
+  }
+  export const fetchGroupChat = async(groupChatName,user,selectedUsers) => {  
+    return await axios.post (
+        `${fetchGroupChatsRoute}`,
+        {
+            name: groupChatName,
+            users: JSON.stringify(selectedUsers.map((u) => u._id)),
+          },
+         {
+          headers: {
               Authorization: `Bearer ${user.token}`
             }
          }

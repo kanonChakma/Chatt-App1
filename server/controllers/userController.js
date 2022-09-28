@@ -84,21 +84,17 @@ export const setAvatar = async (req, res, next) => {
   }
 };
 
-export const getAllUsers = async (req, res, next) => {
+export const getAllUsers = async (req, res) => {
 
   const keyword = req.query.search ? {
     $or: [
-      { name:  { $regex: req.query.search, $options: 'i' } },
-      { email: { $regex: req.query.search, $options: 'i' } }
+      { name:  { $regex: req.query.search, $options: "i" } },
+      { email: { $regex: req.query.search, $options:  "i" } }
     ]
   }: {}
 
-  try {
-    const users = await User.find(keyword).find({_id: {$ne: req.user._id}});
-    return res.json(users);
-  } catch (ex) {
-    next(ex);
-  }
+  const users = await User.find(keyword).find({_id: {$ne: req.user._id}});
+  return res.json(users);
 };
 
 export const logOut = async(req, res, next) => {
