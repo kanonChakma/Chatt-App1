@@ -1,8 +1,8 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
 import { IconButton, Spinner, useToast } from "@chakra-ui/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { getAllMessage } from "../common/chatApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
 import ProfileModal from "./ProfileModel";
@@ -19,23 +19,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
 
   const { selectedChat, setSelectedChat, user } = ChatState();
-
+  console.log(messages, {selectedChat});
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
 
       setLoading(true);
-
-      const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
-        config
-      );
+      const {data} = getAllMessage(selectedChat._id, user);
       setMessages(data);
       setLoading(false);
 
@@ -112,7 +103,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <>
                   {getSender(user, selectedChat.users)}
                   <ProfileModal
-                    user={getSenderFull(user, selectedChat.users)}
+                    user={{user: getSenderFull(user, selectedChat.users)}}
                   />
                 </>
               ) : (
