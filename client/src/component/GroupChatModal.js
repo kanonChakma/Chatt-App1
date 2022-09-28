@@ -1,34 +1,12 @@
-const GroupChatModal = () => {
-    return (
-        <div>
-          This is Chat Loading
-        </div>
-    )     
-   }
-   
-   export default GroupChatModal;
-
-   /*
-    import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  useDisclosure,
-  FormControl,
-  Input,
-  useToast,
-  Box,
-} from "@chakra-ui/react";
-import axios from "axios";
+import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, useToast } from "@chakra-ui/react";
 import { useState } from "react";
-import { ChatState } from "../../Context/ChatProvider";
-import UserBadgeItem from "../userAvatar/UserBadgeItem";
-import UserListItem from "../userAvatar/UserListItem";
+import { fetchGroupChat } from "../common/chatApi";
+import { getAllUser } from "../common/useAuth";
+import { ChatState } from "../context/ChatProvider";
+import ChatLoading from "./ChatLoading";
+import UserBadgeItem from "./useAvatar/UserBadgeItem";
+import UserListItem from "./useAvatar/UserListItem";
+
 
 const GroupChatModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,12 +42,7 @@ const GroupChatModal = ({ children }) => {
 
     try {
       setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await getAllUser(search, user);
       console.log(data);
       setLoading(false);
       setSearchResult(data);
@@ -102,19 +75,7 @@ const GroupChatModal = ({ children }) => {
     }
 
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(
-        `/api/chat/group`,
-        {
-          name: groupChatName,
-          users: JSON.stringify(selectedUsers.map((u) => u._id)),
-        },
-        config
-      );
+      const { data } = await fetchGroupChat(groupChatName, user, selectedUsers)
       setChats([data, ...chats]);
       onClose();
       toast({
@@ -177,8 +138,7 @@ const GroupChatModal = ({ children }) => {
               ))}
             </Box>
             {loading ? (
-              // <ChatLoading />
-              <div>Loading...</div>
+               <ChatLoading/>
             ) : (
               searchResult
                 ?.slice(0, 4)
@@ -203,4 +163,3 @@ const GroupChatModal = ({ children }) => {
 };
 
 export default GroupChatModal;
-   */
