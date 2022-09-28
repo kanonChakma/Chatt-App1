@@ -1,25 +1,16 @@
 import Messages from "../model/messageModel.js";
 
-export const getMessages = async (req, res, next) => {
-  try {
-    const { from, to } = req.body;
+export const getAllMessages = async (req, res) => {
+   try {
+    const message = await Messages.find({chat: req.params.chatId})
+    .populate("sender", "name pic email")
+    .populate("chat")
 
-    const messages = await Messages.find({
-      users: {
-        $all: [from, to],
-      },
-    }).sort({ updatedAt: 1 });
-
-    const projectedMessages = messages.map((msg) => {
-      return {
-        fromSelf: msg.sender.toString() === from,
-        message: msg.message.text,
-      };
-    });
-    res.json(projectedMessages);
-  } catch (ex) {
-    next(ex);
-  }
+    res.json(message);
+   } catch (error) {
+     res.status(400);
+     throw new Error(error.message); 
+   }
 };
 
 export const addMessage = async (req, res, next) => {

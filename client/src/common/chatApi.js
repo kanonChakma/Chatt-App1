@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchAllChatsRoute, fetchGroupChatsRoute } from '../utils/allRoutes';
+import { fetchAllChatsRoute, fetchGroupChatsRoute, getAllMessageRoutes } from '../utils/allRoutes';
 
 
 export const fetchAllChats = async(user) => {  
@@ -32,6 +32,18 @@ export const fetchAllChats = async(user) => {
             name: groupChatName,
             users: JSON.stringify(selectedUsers.map((u) => u._id)),
           },
+         {
+          headers: {
+              Authorization: `Bearer ${user.token}`
+            }
+         }
+      )
+  }
+
+  export const getAllMessage = async(selectedChatId,user) => {  
+      console.log(selectedChatId);
+    return await axios.get (
+        `${getAllMessageRoutes}/${selectedChatId}`,
          {
           headers: {
               Authorization: `Bearer ${user.token}`
