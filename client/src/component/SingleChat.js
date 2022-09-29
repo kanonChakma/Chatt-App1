@@ -19,7 +19,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
 
   const { selectedChat, setSelectedChat, user } = ChatState();
-  console.log(messages, {selectedChat});
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
