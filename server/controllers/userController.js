@@ -2,7 +2,7 @@ import generateToken from '../config/generateToken.js';
 import User from "../model/userModel.js";
 
 export const register = async (req, res) => {
-        console.log(req.body);
+
         const { username, email, password , pic } = req.body.data;
         
         if(!username || !email || !password) {
@@ -30,10 +30,13 @@ export const register = async (req, res) => {
         delete user.password;
         
       if(user) {
-        return res.json({ 
-          status: 201,
+        res.status(201).json({ 
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          pic: user.pic,
           token: generateToken(user._id), 
-          user 
         });
 
       }else {
@@ -49,11 +52,14 @@ export const login = async(req, res) => {
 
     //console.log(await user.matchPassword(password));
     if(user && (await user.matchPassword(password))){
-       return res.json({
-         status:201,
-         user,
-         token: generateToken(user._id),
-       })
+      res.json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        pic: user.pic,
+        token: generateToken(user._id),
+      });
        
       }else {
         return res.json({ 
@@ -88,7 +94,7 @@ export const getAllUsers = async (req, res) => {
 
   const keyword = req.query.search ? {
     $or: [
-      { name:  { $regex: req.query.search, $options: "i" } },
+      { username:  { $regex: req.query.search, $options: "i" } },
       { email: { $regex: req.query.search, $options:  "i" } }
     ]
   }: {}

@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react";
 
 const ProfileModal = ({ user, children }) => {
-  const {username, email, pic} = user.user;
+  const {username, email, pic} = user;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 

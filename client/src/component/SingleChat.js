@@ -2,7 +2,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
 import { FormControl, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { getAllMessage } from "../common/chatApi";
+import { createMessage, getAllMessage } from "../common/chatApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
 import ProfileModal from "./ProfileModel";
@@ -45,21 +45,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
         setNewMessage("");
-        const { data } = await axios.post(
-          "/api/message",
-          {
-            content: newMessage,
-            chatId: selectedChat,
-          },
-          config
-        );
+        const {data} = await createMessage(newMessage, user, selectedChat)
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -73,6 +60,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
+  
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
   };

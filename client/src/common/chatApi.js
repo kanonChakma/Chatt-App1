@@ -51,6 +51,22 @@ export const fetchAllChats = async(user) => {
       )
   }
 
+  export const createMessage = async(newMessage,user,selectedChat) => {  
+    return await axios.post (
+        `${getAllMessageRoutes}`,
+        {
+          content: newMessage,
+          chatId: selectedChat._id,
+        },
+         {
+          headers: {
+            "Content-type": "application/json",
+              Authorization: `Bearer ${user.token}`
+            }
+         }
+      )
+  }
+
   export const renameGroupChat = async(selectedChat,user,groupChatName) => {  
     return await axios.put (
         `${fetchAllChatsRoute}/rename`,
