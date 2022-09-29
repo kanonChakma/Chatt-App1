@@ -26,7 +26,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     try {
 
       setLoading(true);
-      const {data} = getAllMessage(selectedChat._id, user);
+      const {data} = await getAllMessage(selectedChat._id, user);
       setMessages(data);
       setLoading(false);
 
@@ -89,7 +89,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             px={2}
             w="100%"
             fontFamily="Work sans"
-            d="flex"
+            display="flex"
             justifyContent={{ base: "space-between" }}
             alignItems="center"
           >
@@ -98,8 +98,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat("")}
             />
-            {messages &&
-              (!selectedChat.isGroupChat ? (
+            {!selectedChat.isGroupChat ? (
                 <>
                   {getSender(user, selectedChat.users)}
                   <ProfileModal
@@ -115,7 +114,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     setFetchAgain={setFetchAgain}
                   />
                 </>
-              ))}
+              )}
           </Text>
           <Box
             d="flex"

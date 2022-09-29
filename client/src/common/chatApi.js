@@ -41,9 +41,53 @@ export const fetchAllChats = async(user) => {
   }
 
   export const getAllMessage = async(selectedChatId,user) => {  
-      console.log(selectedChatId);
     return await axios.get (
         `${getAllMessageRoutes}/${selectedChatId}`,
+         {
+          headers: {
+              Authorization: `Bearer ${user.token}`
+            }
+         }
+      )
+  }
+
+  export const renameGroupChat = async(selectedChat,user,groupChatName) => {  
+    return await axios.put (
+        `${fetchAllChatsRoute}/rename`,
+        {
+          chatId: selectedChat._id,
+          chatName: groupChatName,
+        },
+         {
+          headers: {
+              Authorization: `Bearer ${user.token}`
+            }
+         }
+      )
+  }
+
+  export const addUserToGroup = async(selectedChat,user,groupChatName) => {  
+    return await axios.put (
+        `${fetchAllChatsRoute}/add`,
+        {
+          chatId: selectedChat._id,
+          userId: user._id,
+        },
+         {
+          headers: {
+              Authorization: `Bearer ${user.token}`
+            }
+         }
+      )
+  }
+
+  export const removeUserToGroup = async(selectedChat,user) => {  
+    return await axios.put (
+        `${fetchAllChatsRoute}/remove`,
+        {
+          chatId: selectedChat._id,
+          userId: user._id,
+        },
          {
           headers: {
               Authorization: `Bearer ${user.token}`
