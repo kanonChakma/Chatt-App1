@@ -115,7 +115,7 @@ export const renameGroup = async(req, res) => {
 
 export const addToGroup = async(req, res) => {
   const {chatId, userId} = req.body;
-  const newChat =  Chat.findByIdAndUpdate(chatId, {
+  const newChat =  await Chat.findByIdAndUpdate(chatId, {
     $push: {users: userId}
   }, {new: true})
   .populate("users", "-password")
@@ -131,12 +131,12 @@ export const addToGroup = async(req, res) => {
 
 export const removeToGroup = async(req, res) => {
   const {chatId, userId} = req.body;
-  const newChat =  Chat.findByIdAndUpdate(chatId, {
+  const newChat =  await Chat.findByIdAndUpdate(chatId, {
     $pull: {users: userId}
   }, {new: true})
   .populate("users", "-password")
   .populate("groupAdmin", "-password");
-
+  console.log(newChat);
   if(!newChat) {
     res.status(404)
     throw new Error("Chat Not Found!");

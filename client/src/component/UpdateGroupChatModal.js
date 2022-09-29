@@ -1,7 +1,7 @@
 import { ViewIcon } from "@chakra-ui/icons";
 import {
-    Box, Button, FormControl, IconButton, Input, Modal, ModalBody,
-    ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useDisclosure, useToast
+  Box, Button, FormControl, IconButton, Input, Modal, ModalBody,
+  ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useDisclosure, useToast
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { addUserToGroup, removeUserToGroup, renameGroupChat } from "../common/chatApi";
@@ -31,7 +31,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
     try {
       setLoading(true);
       const { data } = await getAllUser(search, user)
-      console.log(data);
+     
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -53,7 +53,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
     try {
       setRenameLoading(true);
       const {data} =  await renameGroupChat(selectedChat,user,groupChatName);
-      console.log(data._id);
+  
       
       // setSelectedChat("");
       setSelectedChat(data);
@@ -117,6 +117,8 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   };
 
   const handleRemove = async (user1) => {
+   
+
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
       toast({
         title: "Only admins can remove someone!",
