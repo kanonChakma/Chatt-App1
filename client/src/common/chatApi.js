@@ -66,12 +66,12 @@ export const fetchAllChats = async(user) => {
       )
   }
 
-  export const addUserToGroup = async(selectedChat,user,groupChatName) => {  
+  export const addUserToGroup = async(selectedChat,userId, user) => {  
     return await axios.put (
         `${fetchAllChatsRoute}/add`,
         {
           chatId: selectedChat._id,
-          userId: user._id,
+          userId: userId,
         },
          {
           headers: {
@@ -81,12 +81,12 @@ export const fetchAllChats = async(user) => {
       )
   }
 
-  export const removeUserToGroup = async(selectedChat,user) => {  
+  export const removeUserToGroup = async(selectedChat,userId, user) => {  
     return await axios.put (
         `${fetchAllChatsRoute}/remove`,
         {
           chatId: selectedChat._id,
-          userId: user._id,
+          userId: userId,
         },
          {
           headers: {
