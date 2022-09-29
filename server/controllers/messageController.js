@@ -31,19 +31,19 @@ export const sendMessage = async (req, res) => {
    }
    try {
     var message = await Message.create(newMessage);
-    console.log("1", message);
+    //console.log("1", message);
 
     message = await message.populate("sender", "username pic")
-    console.log("2", message);
+    //console.log("2", message);
     
     message = await message.populate("chat")
-    console.log("3", message);
+    //console.log("3", message);
     
     message = await User.populate(message, {
       path: "chat.users",
       select: "username pic email",
     });
-    console.log("4", message);
+    //console.log("4", message);
     
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
     res.json(message);

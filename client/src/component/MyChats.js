@@ -20,6 +20,7 @@ const MyChats = ({ fetchAgain }) => {
     // console.log(user._id);
     try {
       const { data } = await fetchAllChats(user);
+      console.log(data);
       setChats(data);
     } catch (error) {
       toast({
@@ -101,7 +102,7 @@ const MyChats = ({ fetchAgain }) => {
                 </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs">
-                    <b>{chat.latestMessage.sender.name} : </b>
+                    <b>{chat.latestMessage.sender.username} : </b>
                     {chat.latestMessage.content.length > 50
                       ? chat.latestMessage.content.substring(0, 51) + "..."
                       : chat.latestMessage.content}

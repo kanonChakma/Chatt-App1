@@ -1,11 +1,12 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
-import { IconButton, Spinner, useToast } from "@chakra-ui/react";
+import { FormControl, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { getAllMessage } from "../common/chatApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
 import ProfileModal from "./ProfileModel";
+import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 
@@ -41,38 +42,41 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-//   const sendMessage = async (event) => {
-//     if (event.key === "Enter" && newMessage) {
-//       try {
-//         const config = {
-//           headers: {
-//             "Content-type": "application/json",
-//             Authorization: `Bearer ${user.token}`,
-//           },
-//         };
-//         setNewMessage("");
-//         const { data } = await axios.post(
-//           "/api/message",
-//           {
-//             content: newMessage,
-//             chatId: selectedChat,
-//           },
-//           config
-//         );
-//         setMessages([...messages, data]);
-//       } catch (error) {
-//         toast({
-//           title: "Error Occured!",
-//           description: "Failed to send the Message",
-//           status: "error",
-//           duration: 5000,
-//           isClosable: true,
-//           position: "bottom",
-//         });
-//       }
-//     }
-//   };
-
+  const sendMessage = async (event) => {
+    if (event.key === "Enter" && newMessage) {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: newMessage,
+            chatId: selectedChat,
+          },
+          config
+        );
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to send the Message",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+    }
+  };
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
+  };
+  
   useEffect(() => {
     fetchMessages();
     // eslint-disable-next-line
@@ -116,7 +120,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               )}
           </Text>
           <Box
-            d="flex"
+            display="flex"
             flexDir="column"
             justifyContent="flex-end"
             p={3}
@@ -131,14 +135,29 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 size="xl"
                 w={20}
                 h={20}
+                alignItems="center"
                 alignSelf="center"
                 margin="auto"
               />
             ) : (
               <div className="messages">
-               ScrollableChat
+                <ScrollableChat messages={messages} />
               </div>
             )}
+            <FormControl
+            onKeyDown={sendMessage}
+            id="first-name"
+            isRequired
+            mt={3}
+            >
+            <Input
+              variant="filled"
+              bg="#E0E0E0"
+              placeholder="Enter a message.."
+              value={newMessage}
+              onChange={typingHandler}
+            />
+          </FormControl>
           </Box>
         </>
       ) : (
