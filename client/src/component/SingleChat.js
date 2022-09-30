@@ -2,6 +2,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
 import { FormControl, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import { createMessage, getAllMessage } from "../common/chatApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
@@ -11,15 +12,39 @@ import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 
 
-
+const ENDPOINT = "http://localhost:5000";
+let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const toast = useToast();
-
+  
   const { selectedChat, setSelectedChat, user } = ChatState();
+  
+  //----connected socket io to backend
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, [])
+  
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      if(!selectedChatCompare || 
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+        ) {
+           //notification   
+        } else {
+           setMessages([...messages, newMessageRecieved])
+        }
+    })
+  })
+  
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
@@ -29,7 +54,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       const {data} = await getAllMessage(selectedChat._id, user);
       setMessages(data);
       setLoading(false);
-
+      
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -47,6 +73,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       try {
         setNewMessage("");
         const {data} = await createMessage(newMessage, user, selectedChat)
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -67,6 +94,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   
   useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;  
     // eslint-disable-next-line
   }, [selectedChat]);
 
