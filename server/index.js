@@ -54,7 +54,7 @@ const io = new Server(server, {
     console.log("User Joined Room: " + room);
     })
 
-   //
+   //sending new message
    socket.on("new message", (newMessageRecieved) => {
 
      let chat = newMessageRecieved.chat;
@@ -68,6 +68,10 @@ const io = new Server(server, {
         socket.in(user._id).emit("message recieved", newMessageRecieved);
      });
    })
+ 
+   //typing
+   socket.on("typing", (room) => socket.in(room).emit("typing"));
+   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"))
 
   }); 
    

@@ -2,7 +2,9 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
 import { FormControl, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import Lottie from "react-lottie";
 import { io } from "socket.io-client";
+import animationData from "../animations/typing.json";
 import { createMessage, getAllMessage } from "../common/chatApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
@@ -10,7 +12,6 @@ import ProfileModal from "./ProfileModel";
 import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
-
 
 const ENDPOINT = "http://localhost:5000";
 let socket, selectedChatCompare;
@@ -25,12 +26,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
   
   const { selectedChat, setSelectedChat, user } = ChatState();
-  
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
   //----connected socket io to backend
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true))
+    socket.on("stop typing", () => setIsTyping(false))
   }, [])
   
   useEffect(() => {
@@ -70,6 +80,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id);
       try {
         setNewMessage("");
         const {data} = await createMessage(newMessage, user, selectedChat)
@@ -90,6 +101,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
+    //typing check
+    if(!socketConnected) return;
+    
+    if(!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+
+    setTimeout(() => {
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
+      if(timeDiff >= 3000) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }  
+    },timerLength)
   };
   
   useEffect(() => {
@@ -166,6 +195,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             isRequired
             mt={3}
             >
+            {isTyping?(<div>
+              <Lottie
+                    options={defaultOptions}
+                    // height={50}
+                    width={70}
+                    style={{ marginBottom: 15, marginLeft: 0 }}
+                  /></div>):(<></>)}
             <Input
               variant="filled"
               bg="#E0E0E0"
