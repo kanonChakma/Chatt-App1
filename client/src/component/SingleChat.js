@@ -25,7 +25,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = useState(false);
   const toast = useToast();
   
-  const { selectedChat, setSelectedChat, user } = ChatState();
+  const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -48,7 +48,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       if(!selectedChatCompare || 
         selectedChatCompare._id !== newMessageRecieved.chat._id
         ) {
-           //notification   
+           if(!notification.includes(newMessageRecieved)){
+             setNotification([newMessageRecieved,...notification]);
+             setFetchAgain(!fetchAgain);
+           }   
         } else {
            setMessages([...messages, newMessageRecieved])
         }
