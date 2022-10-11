@@ -6,7 +6,6 @@ import {
 
 const ProfileModal = ({ user, children }) => {
   const {username, email, pic} = user;
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

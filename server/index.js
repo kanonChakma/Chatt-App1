@@ -73,6 +73,11 @@ const io = new Server(server, {
    socket.on("typing", (room) => socket.in(room).emit("typing"));
    socket.on("stop typing", (room) => socket.in(room).emit("stop typing"))
 
+   socket.off("setup", () => {
+     console.log("user disconnected");
+     socket.leave(userData._id);
+   })
+
   }); 
    
 
