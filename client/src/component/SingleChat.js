@@ -150,7 +150,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <>
                   {getSender(user, selectedChat.users)}
                   <ProfileModal
-                    user={{user: getSenderFull(user, selectedChat.users)}}
+                    user={getSenderFull(user, selectedChat.users)}
                   />
                 </>
               ) : (
