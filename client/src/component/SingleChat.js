@@ -1,7 +1,9 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
-import { FormControl, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
+import { FormControl, IconButton, Input, InputGroup, InputLeftAddon, Spinner, useToast } from "@chakra-ui/react";
+import Picker from "emoji-picker-react";
 import { useEffect, useState } from "react";
+import { BsEmojiSmileFill } from "react-icons/bs";
 import Lottie from "react-lottie";
 import { io } from "socket.io-client";
 import animationData from "../animations/typing.json";
@@ -25,7 +27,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = useState(false);
   const toast = useToast();
   
-  const { selectedChat, setSelectedChat, user } = ChatState();
+  const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
+
+
+  //emoji setting
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const handleEmojiPickerhideShow = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+
+  const handleEmojiClick = (event, emojiObject) => {
+    let message = newMessage;
+    message += emojiObject.emoji;
+    setNewMessage(message);
+  };
+
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -48,7 +64,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       if(!selectedChatCompare || 
         selectedChatCompare._id !== newMessageRecieved.chat._id
         ) {
-           //notification   
+           if(!notification.includes(newMessageRecieved)){
+             setNotification([newMessageRecieved,...notification]);
+             setFetchAgain(!fetchAgain);
+           }   
         } else {
            setMessages([...messages, newMessageRecieved])
         }
@@ -100,6 +119,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
   
   const typingHandler = (e) => {
+    setShowEmojiPicker(false);
     setNewMessage(e.target.value);
     //typing check
     if(!socketConnected) return;
@@ -189,11 +209,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
+            <div
+            className="emoji">
+                {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
+            </div>
             <FormControl
-            onKeyDown={sendMessage}
-            id="first-name"
-            isRequired
-            mt={3}
+             onKeyDown={sendMessage}
+             id="first-name"
+             isRequired
+             mt={3}
             >
             {isTyping?(<div>
               <Lottie
@@ -201,23 +225,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     // height={50}
                     width={70}
                     style={{ marginBottom: 15, marginLeft: 0 }}
-                  /></div>):(<></>)}
-            <Input
-              variant="filled"
-              bg="#E0E0E0"
-              placeholder="Enter a message.."
-              value={newMessage}
-              onChange={typingHandler}
-            />
-          </FormControl>
+                  /></div>):(<></>)} 
+            <InputGroup>
+                <InputLeftAddon style={{background:"transparent"}} children= { <BsEmojiSmileFill onClick={handleEmojiPickerhideShow} />} />
+                <Input
+                  variant="filled"
+                  bg="#E0E0E0"
+                  placeholder="Enter a message.."
+                  value={newMessage}
+                  onChange={typingHandler}
+                  onMouseDownCapture={()=>  setShowEmojiPicker(false)}
+                />
+             </InputGroup>
+           </FormControl>
           </Box>
         </>
       ) : (
         // to get socket.io on same page
         <Box d="flex" alignItems="center" justifyContent="center" h="100%">
-          <Text fontSize="3xl" pb={3} fontFamily="Work sans">
-            Click on a user to start chatting
-          </Text>
+           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
+              Click on a user to start chatting
+           </Text>
         </Box>
       )}
     </>
