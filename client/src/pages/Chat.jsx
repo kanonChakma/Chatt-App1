@@ -7,6 +7,7 @@ import { ChatState } from "../context/ChatProvider";
 
 const Chat = () => {
   const { user} = ChatState();
+  
   const [fetchAgain, setFetchAgain] = useState(false);
   return (
    <Container maxW='1200px'>
