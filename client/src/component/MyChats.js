@@ -58,11 +58,11 @@ const MyChats = ({ fetchAgain }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        My Chats
+        <Text fontSize={{ base: "2xl", md: "12px", lg: "2xl" }}> My Chats</Text>
         <GroupChatModal>
           <Button
             d="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            fontSize={{ base: "15px", md: "10px", lg: "15px" }}
             rightIcon={<AddIcon />}
           >
               New Group Chat
