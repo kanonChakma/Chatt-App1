@@ -14,6 +14,7 @@ import ProfileModal from "./ProfileModel";
 import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
+import Welcome from "./Welcome";
 
 const ENDPOINT = "http://localhost:5000";
 let socket, selectedChatCompare;
@@ -28,8 +29,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
   
   const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
-
-
   //emoji setting
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleEmojiPickerhideShow = () => {
@@ -242,11 +241,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         </>
       ) : (
         // to get socket.io on same page
-        <Box d="flex" alignItems="center" justifyContent="center" h="100%">
-           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
-              Click on a user to start chatting
-           </Text>
-        </Box>
+        <Welcome/>
       )}
     </>
   );

@@ -73,7 +73,6 @@ function SideDrawer() {
       setLoading(true);
 
       const { data } = await getAllUser(search, user);
-      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -93,7 +92,6 @@ function SideDrawer() {
     try {
       setLoadingChat(true);
       const { data } = await oneToOneChat(userId, user);
-      console.log(data);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);
