@@ -104,6 +104,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         const {data} = await createMessage(newMessage, user, selectedChat)
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        setFetchAgain(!fetchAgain);
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -159,6 +160,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             display="flex"
             justifyContent={{ base: "space-between" }}
             alignItems="center"
+            boxShadow= "rgba(0, 0, 0, 0.05) 0px 1px 2px 0px"
+           
           >
             <IconButton
               d={{ base: "flex", md: "none" }}
@@ -188,7 +191,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             flexDir="column"
             justifyContent="flex-end"
             p={3}
-            bg="#E8E8E8"
+           
             w="100%"
             h="100%"
             borderRadius="lg"

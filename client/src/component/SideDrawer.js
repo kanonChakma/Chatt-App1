@@ -109,15 +109,16 @@ function SideDrawer() {
   };
 
   return (
-    <div>
+    <div >
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        bg="white"
+        bg="dark"
+        mt={2}
         w="100%"
         p="5px 10px 5px 10px"
-        borderWidth="5px"
+        boxShadow="rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset"
       >
         <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
           <Button variant="ghost" onClick={onOpen}>
