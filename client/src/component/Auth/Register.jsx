@@ -179,7 +179,7 @@ const Signup = () => {
       <Button
         colorScheme="blue"
         width="100%"
-        style={{ marginTop: 15 }}
+        style={{ marginTop: "25px" }}
         onClick={submitHandler}
         isLoading={loading}
       >

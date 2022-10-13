@@ -4,7 +4,13 @@ export const getSender = (loggedUser, users) => {
   };
 
   export const getSenderFull = (loggedUser, users) => {
+    console.log(loggedUser,users);
     return users[0]._id === loggedUser._id ? users[1] : users[0];
+  };
+
+  export const getSenderPic = (loggedUser, chat) => {
+    let image =  chat.users[0]._id === loggedUser._id ? chat.users[1].pic : chat.users[0].pic;
+    return chat.isGroupChat?"":image;
   };
 
   export const isSameSenderMargin = (messages, m, i, userId) => {

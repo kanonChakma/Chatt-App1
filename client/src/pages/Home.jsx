@@ -21,17 +21,16 @@ const Home = () =>{
       display="flex"
       justifyContent="center"
       p={3}
-      bg="white"
-      width="100%"
+      bg="dark"
+      boxShadow=" rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
+      width="95%"
       m="40px 0 15px 0"
-      borderRadius="lg"
-      borderWidth="1px"
     >
       <Text fontSize="4xl" fontFamily="Work sans">
         Talk-A-Tive
       </Text>
     </Box>
-    <Box bg="white" w="100%" p={4} borderRadius="lg" borderWidth="1px">
+    <Box boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" bg="dark" w="95%" px={4}  py={7} borderWidth="1px">
       <Tabs isFitted variant="soft-rounded">
         <TabList mb="1em">
           <Tab>Login</Tab>

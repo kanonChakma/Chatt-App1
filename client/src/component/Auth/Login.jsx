@@ -29,9 +29,18 @@ const Login = () =>{
 
 
     const userData ={ email,password}
-
-    try {
-       const response = await loginUser(userData)
+    const {data} = await loginUser(userData);
+    if(data.status === false) {
+      toast({
+        title: "Error Occured!",
+        description:data.msg,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }else{
       toast({
         title: "Login Successful",
         status: "success",
@@ -39,20 +48,33 @@ const Login = () =>{
         isClosable: true,
         position: "bottom",
       });
-      localStorage.setItem("userInfo", JSON.stringify(response.data));
+      localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/chat");
-    } catch (error) {
-      toast({
-        title: "Error Occured!",
-        description: error.response.data.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
     }
+    // try {
+    //   const {data} = await loginUser(userData);
+    //   toast({
+    //     title: "Login Successful",
+    //     status: "success",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   });
+    //   localStorage.setItem("userInfo", JSON.stringify(data));
+    //   setLoading(false);
+    //   navigate("/chat");
+    // } catch (error) {
+    //   toast({
+    //     title: "Error Occured!",
+    //     description: error.response.data.message,
+    //     status: "error",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   });
+    //   setLoading(false);
+    // }
   };
 
   const handleClick = () => setShow(!show);
@@ -87,7 +109,7 @@ const Login = () =>{
       <Button
         colorScheme="blue"
         width="100%"
-        style={{ marginTop: 15 }}
+        style={{ marginTop: "25px" }}
         onClick={submitHandler}
         isLoading={loading}
       >
