@@ -1,8 +1,10 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text } from "@chakra-ui/layout";
-import { FormControl, IconButton, Input, InputGroup, InputLeftAddon, Spinner, useToast } from "@chakra-ui/react";
+import { FormControl, IconButton, Input, InputGroup, InputLeftAddon, InputRightElement, Spinner, useToast } from "@chakra-ui/react";
 import Picker from "emoji-picker-react";
 import { useEffect, useState } from "react";
+import { AiOutlineSend } from "react-icons/ai";
+import { BiImageAdd } from "react-icons/bi";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import Lottie from "react-lottie";
 import { io } from "socket.io-client";
@@ -15,6 +17,7 @@ import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import Welcome from "./Welcome";
+
 
 const ENDPOINT = "http://localhost:5000";
 let socket, selectedChatCompare;
@@ -31,9 +34,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
   //emoji setting
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const[selectedFile, setSelectedFile] = useState("");
   const handleEmojiPickerhideShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
+
+  const onChangeHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+   }
 
   const handleEmojiClick = (event, emojiObject) => {
     let message = newMessage;
@@ -97,11 +105,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
+    let imageData = new FormData()
+    imageData.append('file', selectedFile);
+    
+    if (newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
         setNewMessage("");
-        const {data} = await createMessage(newMessage, user, selectedChat)
+        const {data} = await createMessage(newMessage, user, selectedChat, imageData)
         socket.emit("new message", data);
         setMessages([...messages, data]);
         setFetchAgain(!fetchAgain);
@@ -192,7 +203,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             justifyContent="flex-end"
             p={3}
            
-            w="100%"
+            w={{base:"100%", lg:"90%"}}
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
@@ -216,7 +227,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
             </div>
             <FormControl
-             onKeyDown={sendMessage}
              id="first-name"
              isRequired
              mt={3}
@@ -228,16 +238,25 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     width={70}
                     style={{ marginBottom: 15, marginLeft: 0 }}
                   /></div>):(<></>)} 
-            <InputGroup>
-                <InputLeftAddon style={{background:"transparent"}} children= { <BsEmojiSmileFill onClick={handleEmojiPickerhideShow} />} />
+            <InputGroup
+            boxShadow = "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px"
+            >
+            <InputLeftAddon style={{background:"transparent", border:"none"}} children= { <label
+              style={{display:"flex"}}
+              >
+              <input type="file" style={{visibility: "hidden", width:0, height:0}} name="file" onChange={onChangeHandler}/>
+              <BiImageAdd/>
+              </label> } />
+            
+                <InputLeftAddon style={{background:"transparent", border:"none"}} children= { <BsEmojiSmileFill onClick={handleEmojiPickerhideShow} />} />
                 <Input
                   variant="filled"
-                  bg="#E0E0E0"
                   placeholder="Enter a message.."
                   value={newMessage}
                   onChange={typingHandler}
                   onMouseDownCapture={()=>  setShowEmojiPicker(false)}
                 />
+                <InputRightElement children={<AiOutlineSend color='green.500'   onClick={sendMessage}/>} />
              </InputGroup>
            </FormControl>
           </Box>
