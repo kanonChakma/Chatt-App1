@@ -34,13 +34,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
   //emoji setting
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const[selectedFile, setSelectedFile] = useState("");
+  const[selectedFile, setSelectedFile] = useState();
+  const [isFilePicked, setIsFilePicked] = useState(false);
+
   const handleEmojiPickerhideShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
   const onChangeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
+    setIsFilePicked(true);
    }
 
   const handleEmojiClick = (event, emojiObject) => {
@@ -105,14 +108,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (event) => {
-    let imageData = new FormData()
-    imageData.append('file', selectedFile);
-    
-    if (newMessage) {
+    setIsFilePicked(false);
+
+    const formData = new FormData();
+		formData.append('File', selectedFile);
+   console.log({formData, selectedFile}); 
+
+    if (newMessage.length>0) {
       socket.emit("stop typing", selectedChat._id);
       try {
         setNewMessage("");
-        const {data} = await createMessage(newMessage, user, selectedChat, imageData)
+        const {data} = await createMessage(newMessage, user, selectedChat, formData)
         socket.emit("new message", data);
         setMessages([...messages, data]);
         setFetchAgain(!fetchAgain);
@@ -222,6 +228,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
+            {isFilePicked?<div>File is selected</div>:<div></div>}
             <div
             className="emoji">
                 {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}

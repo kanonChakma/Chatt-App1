@@ -27,7 +27,7 @@ const Home = () =>{
       m="40px 0 15px 0"
     >
       <Text fontSize="4xl" fontFamily="Work sans">
-        Talk-A-Tive
+        Share-Talk
       </Text>
     </Box>
     <Box boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" bg="dark" w="95%" px={4}  py={7} borderWidth="1px">
