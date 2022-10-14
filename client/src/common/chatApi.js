@@ -52,9 +52,11 @@ export const fetchAllChats = async(user) => {
   }
 
   export const createMessage = async(newMessage,user,selectedChat,imageData) => {  
+    console.log({imageData});
     return await axios.post (
         `${getAllMessageRoutes}`,
         {
+          imageData:imageData,
           content: newMessage,
           chatId: selectedChat._id,
         },

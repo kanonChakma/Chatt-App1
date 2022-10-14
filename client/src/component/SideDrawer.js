@@ -48,7 +48,7 @@ function SideDrawer() {
     chats,
     setChats,
   } = ChatState();
-
+  console.log(notification);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -129,7 +129,7 @@ function SideDrawer() {
           </Button>
         </Tooltip>
         <Text fontSize="2xl" fontFamily="Work sans">
-          Talk-A-Tive
+          Share-Talk
         </Text>
         <div>
           <Menu>
