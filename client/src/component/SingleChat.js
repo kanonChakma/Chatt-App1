@@ -10,6 +10,7 @@ import Lottie from "react-lottie";
 import { io } from "socket.io-client";
 import animationData from "../animations/typing.json";
 import { createMessage, getAllMessage } from "../common/chatApi";
+import { createNotificaiton } from "../common/notificationApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
 import ProfileModal from "./ProfileModel";
@@ -69,6 +70,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("stop typing", () => setIsTyping(false))
   }, [])
   
+  const createNoti = async(message) => { 
+    console.log({message});
+    let arr = [];
+    message.chat.users.map((user) => arr.push(user._id))
+
+     const res = await createNotificaiton(message.chat._id, user, arr);
+     console.log(res.data);
+     return res;
+  }
+
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
       if(!selectedChatCompare || 
