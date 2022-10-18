@@ -17,38 +17,52 @@ const ScrollableChat = ({ messages }) => {
     <div>
       {messages &&
         messages.map((m, i) => (
+          
+          //const base64String = `data:${m.img.contentType};base64,${m.img.data.data.toString('base64')}`;
           <div style={{ display: "flex" }} key={m._id}>
-            {(isSameSender(messages, m, i, user._id) ||
-              isLastMessage(messages, i, user._id)) && (
-              <Tooltip label={m.sender.username} placement="bottom-start" hasArrow>
-                <Avatar
-                  mt="7px"
-                  mr={1}
-                  size="sm"
-                  cursor="pointer"
-                  name={m.sender.username}
-                  src={m.sender.pic}
-                />
-              </Tooltip>
-            )}
-            <span
-              style={{
-                backgroundColor: `${
-                  m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"
-                }`,
-                marginLeft: isSameSenderMargin(messages, m, i, user._id),
-                marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
-                borderRadius: "20px",
-                padding: "5px 15px",
-                maxWidth: "75%",
-              }}
-            >
-              {m.content}
-            </span>
-          </div>
-        ))}
+          {(isSameSender(messages, m, i, user._id) ||
+            isLastMessage(messages, i, user._id)) && (
+            <Tooltip label={m.sender.username} placement="bottom-start" hasArrow>
+              <Avatar
+                mt="7px"
+                mr={1}
+                size="sm"
+                cursor="pointer"
+                name={m.sender.username}
+                src={m.sender.pic}
+              />
+            </Tooltip>
+          )}
+          
+          <span
+            style={{
+              backgroundColor: `${
+                m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"
+              }`,
+              marginLeft: isSameSenderMargin(messages, m, i, user._id),
+              marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
+              borderRadius: "20px",
+              padding: "5px 15px",
+              maxWidth: "75%",
+            }}
+          > {
+            m.img?<>
+            <img width="200" height="100" src={`data:${m.img.contentType};base64,${btoa(String.fromCharCode(...new Uint8Array(m.img.data.data)))}`} alt="img"></img>
+            </>:<>
+            </>
+          }
+            {m.content}
+          </span>
+        </div> 
+
+        ) )}
     </div>
   );
 };
 
 export default ScrollableChat;
+
+//<img width="200" height="100" src={ window.URL.createObjectURL(new Blob([Int8Array.from(m.img.data.data)], {type: m.img.contentType }))} alt="img"></img>
+//let image = `data:${m.img.contentType};base64,${m.img.data.data.toString('base64')}`;
+//let img = `data:${m.img.contentType};base64,${btoa(String.fromCharCode(...new Uint8Array(m.img.data.data)))}
+//let img = data:${m.img.contentType};base64,${m.img.data.data.toString('base64')};
