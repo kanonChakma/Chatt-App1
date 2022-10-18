@@ -2,7 +2,6 @@ import Chat from "../model/chatModel.js";
 import Message from "../model/messageModel.js";
 import User from "../model/userModel.js";
 
-
 export const getAllMessages = async (req, res) => {
    try {
     const message = await Message.find({chat: req.params.chatId})
@@ -17,6 +16,11 @@ export const getAllMessages = async (req, res) => {
 };
 
 export const sendMessage = async (req, res) => {
+  console.log("Request ---", req.body);
+  console.log("Request file ---", req.file);
+  console.log("Request file ---", req.files);
+  const url = req.protocol + '://' + req.get('host')
+  console.log(url);
   const {chatId, content} = req.body;
   
   if (!content || !chatId) {
@@ -27,8 +31,13 @@ export const sendMessage = async (req, res) => {
   const newMessage ={
     sender: req.user._id,
     content,
-    chat:chatId
+    chat:chatId,
+    img: {
+      data: url + '/public/' + req.file.filename,
+      contentType: req.file.mimetype
+    }
    }
+   console.log({newMessage});
    try {
     var message = await Message.create(newMessage);
     //console.log("1", message);

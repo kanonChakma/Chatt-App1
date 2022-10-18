@@ -10,6 +10,7 @@ import Lottie from "react-lottie";
 import { io } from "socket.io-client";
 import animationData from "../animations/typing.json";
 import { createMessage, getAllMessage } from "../common/chatApi";
+import { createNotificaiton } from "../common/notificationApi";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { ChatState } from "../context/ChatProvider";
 import ProfileModal from "./ProfileModel";
@@ -34,7 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
   //emoji setting
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const[selectedFile, setSelectedFile] = useState();
+  const[selectedFile, setSelectedFile] = useState(null);
   const [isFilePicked, setIsFilePicked] = useState(false);
 
   const handleEmojiPickerhideShow = () => {
@@ -45,6 +46,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     setSelectedFile(event.target.files[0]);
     setIsFilePicked(true);
    }
+   
+ console.log({selectedFile});
 
   const handleEmojiClick = (event, emojiObject) => {
     let message = newMessage;
@@ -69,6 +72,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("stop typing", () => setIsTyping(false))
   }, [])
   
+  const createNoti = async(message) => { 
+    console.log({message});
+    let arr = [];
+    message.chat.users.map((user) => arr.push(user._id))
+
+     const res = await createNotificaiton(message.chat._id, user, arr);
+     console.log(res.data);
+     return res;
+  }
+
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
       if(!selectedChatCompare || 
@@ -110,15 +123,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const sendMessage = async (event) => {
     setIsFilePicked(false);
 
-    const formData = new FormData();
-		formData.append('File', selectedFile);
-   console.log({formData, selectedFile}); 
+    let formData = new FormData();
+		formData.append('myImage', selectedFile);
+    formData.append('chatId', selectedChat._id);
+    formData.append('content', newMessage);
+    console.log({formData, selectedFile}); 
 
     if (newMessage.length>0) {
       socket.emit("stop typing", selectedChat._id);
       try {
         setNewMessage("");
-        const {data} = await createMessage(newMessage, user, selectedChat, formData)
+        const {data} = await createMessage(user,formData)
+        console.log({data});
         socket.emit("new message", data);
         setMessages([...messages, data]);
         setFetchAgain(!fetchAgain);
@@ -228,7 +244,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
-            {isFilePicked?<div>File is selected</div>:<div></div>}
+            {selectedFile && (<div>
+              <img alt="not fount" style={{width:"150px", height:"50px"}} src={URL.createObjectURL(selectedFile)} />
+              <br />
+              <button onClick={()=>setSelectedFile(null)}>Remove</button>
+              </div>)}
             <div
             className="emoji">
                 {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
@@ -251,7 +271,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             <InputLeftAddon style={{background:"transparent", border:"none"}} children= { <label
               style={{display:"flex"}}
               >
-              <input type="file" style={{visibility: "hidden", width:0, height:0}} name="file" onChange={onChangeHandler}/>
+              <input type="file" style={{visibility: "hidden", width:0, height:0}} name="myImage" onChange={(event) => {
+                setSelectedFile(event.target.files[0])
+               }
+            }/>
               <BiImageAdd/>
               </label> } />
             

@@ -51,20 +51,16 @@ export const fetchAllChats = async(user) => {
       )
   }
 
-  export const createMessage = async(newMessage,user,selectedChat,imageData) => {  
-    console.log({imageData});
+  export const createMessage = async(user,formData) => {  
+    console.log({formData});
     return await axios.post (
         `${getAllMessageRoutes}`,
-        {
-          imageData:imageData,
-          content: newMessage,
-          chatId: selectedChat._id,
-        },
+          formData,
          {
-          headers: {
-            "Content-type": "application/json",
+            headers: {
+              'content-type': 'multipart/form-data',
               Authorization: `Bearer ${user.token}`
-            }
+          }
          }
       )
   }

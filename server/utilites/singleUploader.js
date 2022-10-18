@@ -5,9 +5,10 @@ import path from "path";
 
 export const uploader = (subfolder_path, allowed_file_types, max_file_size,
      error_msg ) => {
-       //file upload folder
-       const UPLOADS_FOLDER = `${__dirname}/../public/uploads/${subfolder_path}/`;
 
+       //file upload folder
+       const UPLOADS_FOLDER = `./public/`;
+     
        //define storage
        const storage =  multer.diskStorage({
            destination: (req, file, cb) => {

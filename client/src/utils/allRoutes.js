@@ -11,3 +11,5 @@ export const fetchAllChatsRoute = `${host}/api/chat`;
 export const fetchGroupChatsRoute = `${host}/api/chat/group`;
 //message
 export const getAllMessageRoutes = `${host}/api/messages`;
+//notification
+export const notificationRoutes = `${host}/api/notification`;
