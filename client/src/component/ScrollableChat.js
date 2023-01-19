@@ -36,9 +36,6 @@ const ScrollableChat = ({ messages }) => {
           
           <span
             style={{
-              backgroundColor: `${
-                m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"
-              }`,
               marginLeft: isSameSenderMargin(messages, m, i, user._id),
               marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
               borderRadius: "20px",
@@ -46,8 +43,8 @@ const ScrollableChat = ({ messages }) => {
               maxWidth: "75%",
             }}
           > {
-            m.img?<>
-            <img width="200" height="100" src={`data:${m.img.contentType};base64,${btoa(String.fromCharCode(...new Uint8Array(m.img.data.data)))}`} alt="img"></img>
+            m.pic?<>
+            <img width="200" height="100" src={m.pic} alt="img"></img>
             </>:<>
             </>
           }

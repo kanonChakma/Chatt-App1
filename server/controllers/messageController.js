@@ -16,28 +16,19 @@ export const getAllMessages = async (req, res) => {
 };
 
 export const sendMessage = async (req, res) => {
-  console.log("Request ---", req.body);
-  console.log("Request file ---", req.file);
-  console.log("Request file ---", req.files);
-  const url = req.protocol + '://' + req.get('host')
-  console.log(url);
-  const {chatId, content} = req.body;
-  
-  if (!content || !chatId) {
-    console.log("Invalid data passed into request");
-    return res.sendStatus(400);
-  }
 
+  const {chatId, content, pic} = req.body;
+  // if (!content || !chatId) {
+  //   console.log("Invalid data passed into request");
+  //   return res.sendStatus(400);
+  // }
   const newMessage ={
     sender: req.user._id,
     content,
     chat:chatId,
-    img: {
-      data: url + '/public/' + req.file.filename,
-      contentType: req.file.mimetype
-    }
+    pic
    }
-   console.log({newMessage});
+   
    try {
     var message = await Message.create(newMessage);
     //console.log("1", message);

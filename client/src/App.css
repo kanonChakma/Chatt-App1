@@ -1,11 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 .App {
   min-height: 100vh;
   /* display: flex; */
   /* background-image: url("../src/assets/background1.jpg"); */
-  background-position: center;
-  background-size: cover;
+  /* background-position: center;
+  background-size: cover; */
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(#355C7D,#6C5B7B,#C06C84);
 }
 
 ::-webkit-scrollbar {

@@ -51,16 +51,14 @@ export const fetchAllChats = async(user) => {
       )
   }
 
-  export const createMessage = async(user,formData) => {  
-    console.log({formData});
+  export const createMessage = async(user,contentData) => {  
     return await axios.post (
         `${getAllMessageRoutes}`,
-          formData,
+        contentData,
          {
             headers: {
-              'content-type': 'multipart/form-data',
               Authorization: `Bearer ${user.token}`
-          }
+           }
          }
       )
   }

@@ -18,6 +18,7 @@ import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import Welcome from "./Welcome";
+import { imageUplaod } from "../common/imageUplaod";
 
 
 const ENDPOINT = "http://localhost:5000";
@@ -35,24 +36,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, setSelectedChat, user,notification, setNotification } = ChatState();
   //emoji setting
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const[selectedFile, setSelectedFile] = useState(null);
-  const [isFilePicked, setIsFilePicked] = useState(false);
+  const[selectedFile, setSelectedFile] = useState(false);
+  const [pic, setPic] = useState('');
 
   const handleEmojiPickerhideShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
-
-  const onChangeHandler = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setIsFilePicked(true);
-   }
    
- console.log({selectedFile});
 
   const handleEmojiClick = (event, emojiObject) => {
     let message = newMessage;
     message += emojiObject.emoji;
     setNewMessage(message);
+    console.log(message);
   };
 
   const defaultOptions = {
@@ -121,22 +117,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (event) => {
-    setIsFilePicked(false);
-
-    let formData = new FormData();
-		formData.append('myImage', selectedFile);
-    formData.append('chatId', selectedChat._id);
-    formData.append('content', newMessage);
-    console.log({formData, selectedFile}); 
-
-    if (newMessage.length>0) {
+    if (newMessage.length>0 || pic.length>0) {
+      console.log("hello woel")
       socket.emit("stop typing", selectedChat._id);
       try {
-        setNewMessage("");
-        const {data} = await createMessage(user,formData)
+        const {data} = await createMessage(user,{content: newMessage, chatId: selectedChat._id, pic})
         console.log({data});
+        setPic('')
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        setNewMessage("");
         setFetchAgain(!fetchAgain);
       } catch (error) {
         toast({
@@ -197,6 +187,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
            
           >
             <IconButton
+              bg="#345777"
+              _hover={{bg:"#345777", color:"tomato"}}
               d={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat("")}
@@ -244,11 +236,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
-            {selectedFile && (<div>
-              <img alt="not fount" style={{width:"150px", height:"50px"}} src={URL.createObjectURL(selectedFile)} />
-              <br />
-              <button onClick={()=>setSelectedFile(null)}>Remove</button>
-              </div>)}
+            {
+              selectedFile? ( <Spinner  speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.50'
+               size='xs' />) : (<div>
+                 {pic?(<div>
+                  <img alt="chat-img" style={{width:"150px", height:"50px"}} src={pic} />
+                      <br />
+                 <button>Remove</button>
+                  </div>): " "}
+              </div>
+              )}
             <div
             className="emoji">
                 {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
@@ -272,14 +271,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               style={{display:"flex"}}
               >
               <input type="file" style={{visibility: "hidden", width:0, height:0}} name="myImage" onChange={(event) => {
-                setSelectedFile(event.target.files[0])
-               }
-            }/>
+                imageUplaod(event.target.files[0], setPic, setSelectedFile, toast)
+                }
+              }/>
               <BiImageAdd/>
               </label> } />
             
                 <InputLeftAddon style={{background:"transparent", border:"none"}} children= { <BsEmojiSmileFill onClick={handleEmojiPickerhideShow} />} />
                 <Input
+                  bg="transparent"
+                  _hover={{bg: "transparent"}}
                   variant="filled"
                   placeholder="Enter a message.."
                   value={newMessage}
