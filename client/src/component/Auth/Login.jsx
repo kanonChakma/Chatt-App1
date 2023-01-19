@@ -80,7 +80,7 @@ const Login = () =>{
   const handleClick = () => setShow(!show);
 
   return (
-    <VStack spacing="10px">
+    <VStack color="white" spacing="10px">
       <FormControl id="email" isRequired>
         <FormLabel>Email Address</FormLabel>
         <Input

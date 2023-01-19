@@ -48,7 +48,6 @@ function SideDrawer() {
     chats,
     setChats,
   } = ChatState();
-  console.log(notification);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -109,26 +108,26 @@ function SideDrawer() {
   };
 
   return (
-    <div >
+    <>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         bg="dark"
-        mt={2}
         w="100%"
-        p="5px 10px 5px 10px"
+        p="20px"
+        color="white"
         boxShadow="rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset"
       >
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
+        <Tooltip label="Search Users to chat" size="xs"  placement="bottom-end">
+          <Button  bg ="#345777" _hover={{ bg:"#345777"}} variant="ghost" onClick={onOpen}>
             <i className="fas fa-search"></i>
             <Text display={{ base: "none", md: "flex" }} px={4}>
               Search User
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
+        <Text textTransform="uppercase" fontSize="2xl">
           Share-Talk
         </Text>
         <div>
@@ -140,7 +139,11 @@ function SideDrawer() {
               />
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-            <MenuList pl={2}>
+            <MenuList 
+            bg ="#345777"
+            color= "tomato"
+            border="none"
+            pl={2}>
               {!notification.length && "No New Messages"}
               {notification.map((notif) => (
                 <MenuItem
@@ -157,8 +160,9 @@ function SideDrawer() {
               ))}
             </MenuList>
           </Menu>
-          <Menu>
-            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
+          <Menu
+          >
+            <MenuButton  as={Button} _hover={{ bg: "#345777", color: " white" }} _focus={{bg: "#345777"}} bg="#345777" rightIcon={<ChevronDownIcon _focus={{bg: "#345777"}} />}>
               <Avatar
                 size="sm"
                 cursor="pointer"
@@ -166,30 +170,45 @@ function SideDrawer() {
                 src={user.pic}
               />
             </MenuButton>
-            <MenuList>
+            <MenuList bg="#345777" border="none">
               <ProfileModal user={user}>
-                <MenuItem>My Profile</MenuItem>{" "}
+                <MenuItem _focus={{bg: "#345777"}} _hover={{ bg: "#345777", color: "tomato" }}>My Profile</MenuItem>{" "}
               </ProfileModal>
               <MenuDivider />
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+              <MenuItem _focus={{bg: "#345777"}}  _hover={{ bg: "#345777", color: "tomato" }} onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </div>
       </Box>
 
-      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+      <Box
+      backgroundColor={`linear-gradient(#355C7D,#6C5B7B,#C06C84)`}
+      backgroundImage={`linear-gradient(#355C7D,#6C5B7B,#C06C84)`}
+      bg="linear-gradient(#355C7D,#6C5B7B,#C06C84)"
+      bgImg={`linear-gradient(#355C7D,#6C5B7B,#C06C84)`}
+      bgColor="dark"
+      >
+      <Drawer
+      placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
+        <DrawerContent bg="dark" color="white">
+          <DrawerHeader textAlign="center" borderBottomWidth="1px" textTransform="uppercase">Search Users</DrawerHeader>
           <DrawerBody>
             <Box d="flex" pb={2}>
               <Input
                 placeholder="Search by name or email"
                 mr={2}
+                mt={3}
+                color="tomato"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Button onClick={handleSearch}>Go</Button>
+              <Button 
+              _hover={{bg:"linear-gradient(#6C5B7B,#C06C84)"}}
+              bg="linear-gradient(#6C5B7B,#C06C84)"
+              width="100%" 
+              borderRadius="0"
+              mt={4} onClick={handleSearch}>Go</Button>
             </Box>
             {loading ? (
               <ChatLoading />
@@ -206,7 +225,8 @@ function SideDrawer() {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </div>
+      </Box>
+    </>
   );
 }
 

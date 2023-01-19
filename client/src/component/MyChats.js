@@ -11,14 +11,15 @@ import GroupChatModal from "./GroupChatModal";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState("");
-   
+  const [allChats, setAllChats] = useState(""); 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
   const toast = useToast();
   const fetchChats = async () => {
     try {
       const { data } = await fetchAllChats(user);
+      setAllChats(data)
       setChats(data);
-      console.log(chats);
+      console.log(data);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -36,12 +37,16 @@ const MyChats = ({ fetchAgain }) => {
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
+
   return (
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
+      color="white"
       p={3}
+      background= ""
+      backgroundColor="#6C5B7B"
       bg="white"
       boxShadow=" rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
       w={{ base: "100%", md: "31%" }}
@@ -50,7 +55,6 @@ const MyChats = ({ fetchAgain }) => {
         pb={3}
         px={3}
         fontSize={{ base: "28px", md: "30px" }}
-        fontFamily="Work sans"
         display="flex"
         w="100%"
         justifyContent="space-between"
@@ -60,37 +64,36 @@ const MyChats = ({ fetchAgain }) => {
         <GroupChatModal>
           <Button
             d="flex"
+            backgroundColor="#5c4e69"
             fontSize={{ base: "15px", md: "10px", lg: "15px" }}
             rightIcon={<AddIcon />}
           >
               New Group Chat
           </Button>
-      </GroupChatModal>
+        </GroupChatModal>
       </Box>
       <Box
         d="flex"
         flexDir="column"
         p={3}
-        bg="#F8F8F8"
         w="100%"
         h="100%"
         borderRadius="lg"
         overflowY="hidden"
       >
-        {chats ? (
+        {allChats ? (
           <Stack overflowY="scroll">
-            {chats.map((chat) => (
+            {allChats.map((chat) => (
               <Box
-              display="flex"
-              alignItems="center"
-              
+                display="flex"
+                alignItems="center"
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
+                bg={selectedChat === chat ? "#38B2AC" : "#5c4e69"}
+                color={selectedChat === chat ? "white" : "white"}
                 px={3}
                 py={2}
-                borderRadius="lg"
+                borderRadius="sm"
                 key={chat._id}
               >
               <Avatar
@@ -100,11 +103,11 @@ const MyChats = ({ fetchAgain }) => {
                   src={getSenderPic(loggedUser, chat)}
                 />
                 <Box>
-                <Text>
-                {!chat.isGroupChat
-                  ? getSender(loggedUser, chat.users)
-                  : chat.chatName}
-                  </Text>
+                   <Text>
+                  {!chat.isGroupChat
+                   ? getSender(loggedUser, chat.users)
+                   : chat.chatName}
+                   </Text>
                   {chat.latestMessage && (
                     <Text fontSize="xs">
                       <b>{chat.latestMessage.sender.username} : </b>

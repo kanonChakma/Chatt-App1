@@ -8,18 +8,17 @@ const UserListItem = ({ user,handleFunction }) => {
     <Box
       onClick={handleFunction}
       cursor="pointer"
-      bg="#E8E8E8"
+      color="white"
+      bg="linear-gradient(#6C5B7B,#C06C84)"
       _hover={{
         background: "#38B2AC",
-        color: "white",
       }}
-      w="100%"
-      d="flex"
+      display="flex"
       alignItems="center"
-      color="black"
       px={3}
-      py={2}
+      py={3}
       mb={2}
+      mt={3}
       borderRadius="lg"
     >
       <Avatar

@@ -13,20 +13,11 @@ const ProfileModal = ({ user, children }) => {
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <IconButton bg="#345777" _hover={{bg:"#345777", color:"tomato"}} display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
       )}
-      <Modal size="md" onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal  size="md" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent h="350px">
-          <ModalHeader
-            fontSize="30px"
-            fontFamily="Work sans"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            {username}
-          </ModalHeader>
+        <ModalContent bg="#345777" color="white" h="330px">
           <ModalCloseButton />
           <ModalBody
           display="flex"
@@ -35,20 +26,33 @@ const ProfileModal = ({ user, children }) => {
             justifyContent="space-between"
           >
             <Image
+              marginTop="10px"
               borderRadius="full"
-              boxSize="100px"
+              height="115px"
+              width="120px"
+              
               src={pic}
               alt={username}
             />
             <Text
-              fontSize={{ base: "28px", md: "30px" }}
+              height="5px"
+              textAlign="start"
+              fontWeight="bold"
+              fontSize={{ base: "20px", md: "25px" }}
               fontFamily="Work sans"
             >
-              Email: {email}
+               Username :   {username}
+            </Text>
+            <Text
+              fontWeight="bold"
+              fontSize={{ base: "20px", md: "25px" }}
+              fontFamily="Work sans"
+            >
+              Email : {email}
             </Text>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
+            <Button color="black" onClick={onClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
