@@ -16,7 +16,7 @@ const Signup = () => {
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [confirmpassword, setConfirmpassword] = useState();
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState('');
   const [pic, setPic] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -86,15 +86,14 @@ const Signup = () => {
       });
       return;
     }
-    console.log(pics);
 
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
-      data.append("upload_preset", "chatt-app");
-      data.append("cloud_name", "dmnkw7ehc");
+      data.append("upload_preset", process.env.REACT_APP_PRESET_NAME);
+      data.append("cloud_name", process.env.REACT_APP_CLOUD_NAME);
 
-      fetch("https://api.cloudinary.com/v1_1/dmnkw7ehc/image/upload", {
+      fetch(process.env.REACT_APP_CLOUD, {
         method: "post",
         body: data,
       })
@@ -146,8 +145,13 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
+            <Button  
+              bg="#376187"
+               _hover={{bg:"#345777",color:"tomato"}} 
+               h="1.75rem" 
+               size="sm" 
+               onClick={handleClick}>
+              {show? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
@@ -161,8 +165,13 @@ const Signup = () => {
             onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
+            <Button 
+                 bg="#376187"
+                _hover={{bg:"#345777",color:"tomato"}}
+                 h="1.75rem" 
+                 size="sm" 
+                 onClick={handleClick}>
+              {show? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
@@ -171,17 +180,21 @@ const Signup = () => {
         <FormLabel>Upload your Picture</FormLabel>
         <Input
           type="file"
+          placeholder="select"
           p={1.5}
           accept="image/*"
           onChange={(e) => postDetails(e.target.files[0])}
         />
       </FormControl>
       <Button
+        cursor="pointer"
         colorScheme="blue"
         width="100%"
         style={{ marginTop: "25px" }}
         onClick={submitHandler}
         isLoading={loading}
+        bg="#376187"
+        _hover={{bg:"#345777",color:"tomato"}}
       >
         Sign Up
       </Button>
