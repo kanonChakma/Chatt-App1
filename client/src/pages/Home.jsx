@@ -26,15 +26,15 @@ const Home = () =>{
       width="95%"
       m="40px 0 15px 0"
     >
-      <Text fontSize="4xl" fontFamily="Work sans">
+      <Text fontSize="4xl" color="white" textTransform="uppercase" fontWeight="bold" fontFamily="Work sans">
         Share-Talk
       </Text>
     </Box>
     <Box boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" bg="dark" w="95%" px={4}  py={7} borderWidth="1px">
       <Tabs isFitted variant="soft-rounded">
         <TabList mb="1em">
-          <Tab>Login</Tab>
-          <Tab>Sign Up</Tab>
+          <Tab color="white"  bg="#345777" >Login</Tab>
+          <Tab bg="#345777" color="white">Sign Up</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>

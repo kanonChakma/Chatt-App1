@@ -43,7 +43,6 @@ const GroupChatModal = ({ children }) => {
     try {
       setLoading(true);
       const { data } = await getAllUser(search, user);
-      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -103,7 +102,10 @@ const GroupChatModal = ({ children }) => {
 
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent
+        color="white"
+        bg="linear-gradient(#6C5B7B,#3e6c94,#355C7D)"
+        >
           <ModalHeader
             fontSize="35px"
             fontFamily="Work sans"
@@ -123,7 +125,7 @@ const GroupChatModal = ({ children }) => {
             </FormControl>
             <FormControl>
               <Input
-                placeholder="Add Users eg: John, Piyush, Jane"
+                placeholder="Search user"
                 mb={1}
                 onChange={(e) => handleSearch(e.target.value)}
               />
@@ -152,7 +154,9 @@ const GroupChatModal = ({ children }) => {
             )}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleSubmit} colorScheme="blue">
+            <Button 
+            bg ="#345777"
+            onClick={handleSubmit} colorScheme="blue">
               Create Chat
             </Button>
           </ModalFooter>

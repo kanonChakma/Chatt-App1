@@ -100,14 +100,18 @@ const Login = () =>{
             placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
+            <Button
+            bg="#376187"
+            _hover={{bg:"#345777",color:"tomato"}}
+            h="1.75rem" size="sm" onClick={handleClick}>
               {show ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
       <Button
-        colorScheme="blue"
+      bg="#376187"
+      _hover={{bg:"#345777",color:"tomato"}}
         width="100%"
         style={{ marginTop: "25px" }}
         onClick={submitHandler}
@@ -117,14 +121,14 @@ const Login = () =>{
       </Button>
       <Button
         variant="solid"
-        colorScheme="red"
+        colorScheme="whatsapp"
         width="100%"
         onClick={() => {
           setEmail("guest@example.com");
           setPassword("123456");
         }}
       >
-        Get Guest User Credentials
+        Login as Guest User 
       </Button>
     </VStack>
   );

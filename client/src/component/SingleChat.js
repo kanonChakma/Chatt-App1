@@ -1,9 +1,9 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Box, Text } from "@chakra-ui/layout";
+import { Badge, Box, Text } from "@chakra-ui/layout";
 import { FormControl, IconButton, Input, InputGroup, InputLeftAddon, InputRightElement, Spinner, useToast } from "@chakra-ui/react";
 import Picker from "emoji-picker-react";
 import { useEffect, useState } from "react";
-import { AiOutlineSend } from "react-icons/ai";
+import { AiOutlineSend,AiOutlineClose } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import Lottie from "react-lottie";
@@ -19,14 +19,17 @@ import "./styles.css";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import Welcome from "./Welcome";
 import { imageUplaod } from "../common/imageUplaod";
+import {sha1} from 'crypto-hash';
 
 
-const ENDPOINT = "http://localhost:5000";
+
+const ENDPOINT = "https://share-talk-backend.onrender.com";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
@@ -37,7 +40,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   //emoji setting
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const[selectedFile, setSelectedFile] = useState(false);
-  const [pic, setPic] = useState('');
+  const [pic, setPic] = useState({img_url: "", public_id: ""});
 
   const handleEmojiPickerhideShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -48,7 +51,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     let message = newMessage;
     message += emojiObject.emoji;
     setNewMessage(message);
-    console.log(message);
   };
 
   const defaultOptions = {
@@ -59,6 +61,31 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
+const deleteImage = async (pic) => {
+  setLoadingImage(true)
+  const timestamp = new Date().getTime()
+  const string = `public_id=${pic.public_id}&timestamp=${timestamp}${process.env.REACT_APP_API_SECRET}`
+  const signature = await sha1(string)
+  const formData = new FormData()
+  formData.append("public_id", pic.public_id)
+  formData.append("signature",signature)
+  formData.append("api_key", process.env.REACT_APP_API_KEY)
+  formData.append("timestamp",timestamp)
+  fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/destroy`, {
+    method: "post",
+    body: formData
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    setPic({img_url: "", public_id: ""})
+    setLoadingImage(false)
+  })
+  .catch((err) => {
+    console.log(err)
+    setLoadingImage(false)
+  })
+}
   //----connected socket io to backend
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -117,11 +144,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (event) => {
-    if (newMessage.length>0 || pic.length>0) {
-      console.log("hello woel")
+    if (newMessage.length>0 || pic.img_url.length>0) {
       socket.emit("stop typing", selectedChat._id);
       try {
-        const {data} = await createMessage(user,{content: newMessage, chatId: selectedChat._id, pic})
+        const {data} = await createMessage(user,{content: newMessage, chatId: selectedChat._id, pic: pic.img_url})
         console.log({data});
         setPic('')
         socket.emit("new message", data);
@@ -169,6 +195,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare = selectedChat;  
     // eslint-disable-next-line
   }, [selectedChat]);
+
+  const handleClick = event => {
+    const { target = {} } = event || {};
+    target.value = "";
+  };
 
   return (
     <>
@@ -237,14 +268,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </div>
             )}
             {
-              selectedFile? ( <Spinner  speed='0.65s'
+              selectedFile || loadingImage? ( <Spinner  speed='0.65s'
               emptyColor='gray.200'
               color='blue.50'
                size='xs' />) : (<div>
-                 {pic?(<div>
-                  <img alt="chat-img" style={{width:"150px", height:"50px"}} src={pic} />
-                      <br />
-                 <button>Remove</button>
+                 {pic.img_url?(<div>
+                  <Badge mt='2'  right='0' fontSize='0.8em'>
+                    <AiOutlineClose onClick={()=> {
+                      deleteImage(pic)
+                      setPic("")
+                    }} color="red"/>
+                 </Badge>
+                  <img alt="chat-img" style={{width:"120px", height:"60px"}} src={pic.img_url} />
                   </div>): " "}
               </div>
               )}
@@ -270,7 +305,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             <InputLeftAddon style={{background:"transparent", border:"none"}} children= { <label
               style={{display:"flex"}}
               >
-              <input type="file" style={{visibility: "hidden", width:0, height:0}} name="myImage" onChange={(event) => {
+              <input type="file" style={{visibility: "hidden", width:0, height:0}} name="myImage" onClick={handleClick} onChange={(event) => {
                 imageUplaod(event.target.files[0], setPic, setSelectedFile, toast)
                 }
               }/>

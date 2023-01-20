@@ -1,6 +1,6 @@
-export const imageUplaod = (pics, setPic, setLoading, toast) => {
-    setLoading(true);
+export const imageUplaod = (pics, setPic, setSelectedFile, toast) => {
     if (pics === undefined) {
+      setSelectedFile(false);
       toast({
         title: "Please Select an Image!",
         status: "warning",
@@ -10,30 +10,32 @@ export const imageUplaod = (pics, setPic, setLoading, toast) => {
       });
       return;
     }
-    console.log(`${process.env.REACT_APP_CLOUD}`)
+
     console.log(pics);
 
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      setSelectedFile(true);
       const data = new FormData();
       data.append("file", pics);
-      data.append("upload_preset", "chatt-app");
-      data.append("cloud_name", "dmnkw7ehc");
+      data.append("upload_preset", process.env.REACT_APP_PRESET_NAME);
+      data.append("cloud_name", process.env.REACT_APP_CLOUD_NAME);
 
-      fetch(`${process.env.REACT_APP_CLOUD}`, {
+      fetch(process.env.REACT_APP_CLOUD, {
         method: "post",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
           console.log(data)
-          setPic(data.url.toString());
-          setLoading(false);
+          setPic({img_url : data.url.toString(), public_id: data.public_id});
+          setSelectedFile(false);
         })
         .catch((err) => {
           console.log(err);
-          setLoading(false);
+          setSelectedFile(false);
         });
     } else {
+      setSelectedFile(false);
       toast({
         title: "Please Select an Image!",
         status: "warning",
@@ -41,7 +43,7 @@ export const imageUplaod = (pics, setPic, setLoading, toast) => {
         isClosable: true,
         position: "bottom",
       });
-      setLoading(false);
+      setSelectedFile(false);
       return;
     }
   };

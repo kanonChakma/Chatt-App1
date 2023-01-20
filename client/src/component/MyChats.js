@@ -65,6 +65,7 @@ const MyChats = ({ fetchAgain }) => {
           <Button
             d="flex"
             backgroundColor="#5c4e69"
+            _hover={{bg: "#5c4e69",color:"tomato"}}
             fontSize={{ base: "15px", md: "10px", lg: "15px" }}
             rightIcon={<AddIcon />}
           >
@@ -111,6 +112,7 @@ const MyChats = ({ fetchAgain }) => {
                   {chat.latestMessage && (
                     <Text fontSize="xs">
                       <b>{chat.latestMessage.sender.username} : </b>
+                      {chat.latestMessage.pic && "sent a image "}
                       {chat.latestMessage.content.length > 50
                         ? chat.latestMessage.content.substring(0, 51) + "..."
                         : chat.latestMessage.content}
